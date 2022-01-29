@@ -1,0 +1,46 @@
+{
+  "name": "skill_tree_project",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Assets": {
+        "$className": "Folder",
+        "$ignoreUnknownInstances": true
+      },
+      "$className": "ReplicatedStorage",
+      "$ignoreUnknownInstances": true,
+      "$path": "src/ReplicatedStorage",
+      "Cache": {
+        "$ignoreUnknownInstances": true,
+        "$path": "src/Cache"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": true,
+      "$path": "src/ServerScriptService"
+    },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "$ignoreUnknownInstances": true,
+      "$path": "src/ServerStorage",
+      "Assets": {
+        "$className": "Folder",
+        "$ignoreUnknownInstances": true
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "Assets": {
+          "$className": "Folder",
+          "$ignoreUnknownInstances": true
+        },
+        "$className": "StarterPlayerScripts",
+        "$ignoreUnknownInstances": true,
+        "$path": "src/StarterPlayerScripts"
+      },
+      "$ignoreUnknownInstances": true
+    }
+  }
+}
