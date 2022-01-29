@@ -8,7 +8,7 @@ baseLine.BorderSizePixel = 0
 baseLine.ZIndex = 0
 function Module:CreateLine( startVector2 : Vector2, endVector2 : Vector2, lineThickness : number, customProperties )
 
-    local direction : Vector2 = endVector2 - startVector2
+    local direction : Vector2 = (endVector2 - startVector2)
     local rotation : number = math.deg( math.atan( direction.Y / direction.X ) )
     local lineSize : UDim2 = UDim2.fromOffset( (startVector2-endVector2).Magnitude / Module.Segments, math.clamp( lineThickness or 3, 1, 5 ) )
 
@@ -16,7 +16,7 @@ function Module:CreateLine( startVector2 : Vector2, endVector2 : Vector2, lineTh
         for i = 1, Module.Segments do
             local midPoint : Vector2 = startVector2:Lerp(endVector2, i/Module.Segments)
             local lineFrame = baseLine:Clone()
-            lineFrame.Size = lineSize + UDim2.fromOffset(2, 0)
+            lineFrame.Size = lineSize + UDim2.fromOffset(Module.Segments, 0)
             lineFrame.Position = UDim2.fromOffset(midPoint.X, midPoint.Y)
             lineFrame.Rotation = rotation
             if typeof(customProperties) == "table" then
@@ -30,6 +30,21 @@ function Module:CreateLine( startVector2 : Vector2, endVector2 : Vector2, lineTh
 
     return segments
 
+end
+
+function Module:SetProperties( Parent, propertiesTable )
+	for guiObjectName, labelProperties in pairs( propertiesTable ) do
+		local targetGuiObject = Parent:FindFirstChild( guiObjectName )
+		if targetGuiObject and targetGuiObject:IsA('Frame') then
+			targetGuiObject = targetGuiObject:FindFirstChild('Label')
+		end
+		if not targetGuiObject then
+			continue
+		end
+		for propertyName, propertyValue in pairs(labelProperties) do
+			targetGuiObject[propertyName] = propertyValue
+		end
+	end
 end
 
 return Module

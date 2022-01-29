@@ -1,5 +1,7 @@
 
-local Module : table = { }
+local Module : table = {
+    Compression = require(script.Compression) 
+}
 
 function Module:ConvertToBytesTable(str) : table
 	local bytes : table = {}

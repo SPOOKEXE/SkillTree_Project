@@ -109,7 +109,12 @@ Module.Trees = {
                 Reqs = { ANVIL_CRAFTING_1 = 1 },
             },
         },
-    }
+    },
+    {
+        ID = "OFFENSIVE_TREE",
+        Icon = "rbxassetid://6070699281",
+        Nodes = { },
+    },
 }
 
 function Module:GetTreeFromID( treeID : string? )

@@ -1,8 +1,11 @@
 
+local ContextActionService : ContextActionService = game:GetService('ContextActionService')
 
 local Players = game:GetService('Players')
 local LocalPlayer = Players.LocalPlayer
+local LocalMouse : Mouse = LocalPlayer:GetMouse()
 local LocalAssets = LocalPlayer:WaitForChild('PlayerScripts'):WaitForChild('Assets')
+local PlayerGui : PlayerGui = LocalPlayer:WaitForChild('PlayerGui')
 local LocalModules = require(LocalPlayer:WaitForChild('PlayerScripts'):WaitForChild('Modules'))
 
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
@@ -10,13 +13,15 @@ local ReplicatedModules = require(ReplicatedStorage:WaitForChild('Modules'))
 local ReplicatedCore = require(ReplicatedStorage:WaitForChild('Core'))
 
 local Interface : ScreenGui = LocalPlayer:WaitForChild('PlayerGui'):WaitForChild('Interface')
-local SkillTreeFrame = Interface:WaitForChild('SkillTreeFrame')
+local SkillTreeFrame : Frame = Interface:WaitForChild('SkillTreeFrame')
+local TreeTooltipFrame : Frame = Interface:WaitForChild('SkillTooltip')
 
 local SkillTreesDef = ReplicatedModules.Definitions.SkillTrees
 
 local SystemsContainer = { }
 
 local MapFrames = { }
+local NodeFrames = { }
 
 -- // Module // --
 local Module = { }
@@ -58,14 +63,14 @@ function Module:SetupTree( ParentFrame, Data )
 
         local nodePoint = LocalAssets.UI.TemplateNode:Clone()
         nodePoint.Name = nodeData.ID
-        --nodePoint.Label.Text = nodeData.ID
-        nodePoint.Position = nodeData.Position --Module:UDim2OffsetToScale( nodeData.Position )
-        nodePoint.Size = nodeData.Size --Module:UDim2OffsetToScale( nodeData.Size )
+        nodePoint.Position = Module:UDim2OffsetToScale( nodeData.Position )
+        nodePoint.Size = Module:UDim2OffsetToScale( nodeData.Size )
         nodePoint.Icon.Image = nodeConfig.Icon
         nodePoint.Icon.Size = nodeConfig.Icon_Size
         nodePoint.Parent = ParentFrame
 
         nodesFrameCache[ nodeData.ID ] = {nodePoint, nodeData}
+        NodeFrames[nodePoint] = {nodeData, nodeConfig}
 
     end
 
@@ -124,6 +129,38 @@ function Module:Init( otherSystems )
         Module:SetupTree( TreeMap, treeData )
 
     end
+
+    TreeTooltipFrame.Visible = false
+
+    ReplicatedModules.Classes.Timer.New({ Interval = 0.1 }).Signal:Connect(function()
+
+        local guiObjects = PlayerGui:GetGuiObjectsAtPosition( LocalMouse.X, LocalMouse.Y )
+        if #guiObjects == 0 then
+            return
+        end
+
+        local foundFrame, frameData = nil, nil
+
+        for i, Frame : Frame in ipairs( guiObjects ) do
+            if NodeFrames[ Frame ] and Frame.Visible then
+                foundFrame, frameData = Frame, NodeFrames[ Frame ]
+                break
+            end
+        end
+
+        TreeTooltipFrame.Visible = (foundFrame ~= nil)
+        if frameData then
+            local nodeData, nodeConfig = unpack( frameData )
+            LocalModules.Utility.TreeUtility:SetProperties(TreeTooltipFrame, nodeConfig.Display)
+        end
+
+    end)
+
+    ContextActionService:BindAction('epic', function(actionName, inputState, inputObject)
+        if actionName == 'epic' and inputState == Enum.UserInputState.Begin then
+            SkillTreeFrame.Visible = not SkillTreeFrame.Visible
+        end
+    end, false, Enum.KeyCode.H)
 
 end
 
